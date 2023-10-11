@@ -1,11 +1,19 @@
 import { sendMessage } from "./twilio"
 import {incrementStage,decrementStage,getStage,setStage} from "../utils/state"
+import User from '../models/user.model' 
 
-export default function whatsappHandler(incoming: { To: string; From: string; Body:string })
+export default async function whatsappHandler(incoming: { To: string; From: string; Body:string })
 {
      
-      console.log("Hi")
+    console.log("Hi")
+    const isExistingUser = await User.findOne({ phoneNumber: incoming.From })
 
+    if(!isExistingUser){
+      const user = await User.create({
+        phoneNumber: incoming.From
+      })
+      console.log(`new user created with phone Number: ${user.phoneNumber} with ${user.credits} credits remaining.`)
+    }
 
     let response:string;
     if(incoming.Body==='Generate')
