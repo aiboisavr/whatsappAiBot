@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
@@ -11,6 +11,10 @@ const userSchema = new Schema(
     phoneNumber: {
       type: String,
       required: true,
+    },
+    credits:{
+      type:Number,
+      required:true
     }
   }
 );
