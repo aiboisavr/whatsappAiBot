@@ -1,7 +1,7 @@
 import { sendMessage } from "./twilio"
 import {incrementStage,decrementStage,getStage,setStage} from "../utils/state"
 
-export default function whatsappHandler(incoming: { To: string; From: string; Body:string })
+export default function whatsappHandler(incoming: { To: string; From: string; Body:string,MediaUrl0:string})
 {
      
       console.log("Hi")
@@ -15,7 +15,7 @@ export default function whatsappHandler(incoming: { To: string; From: string; Bo
       incrementStage();
       console.log(`generate ${getStage()}`)
     }
-    else if(incoming.Body==='Image')
+    else if(incoming.MediaUrl0)
     {  
       if(getStage()===1)
       {

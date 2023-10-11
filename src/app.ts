@@ -20,15 +20,11 @@ app.use(
 
 app.post('/api/bot', async function (req, res) {
 
-
+  console.log(req.body)
   whatsappHandler(req.body)
-  console.log(req.body.From);
-  console.log(req.body.To)
-  
   
   });
   
-
 
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
