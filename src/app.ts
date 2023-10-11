@@ -1,6 +1,7 @@
 import {connectToDatabase} from './config/db'
 import express from 'express'
 import bodyParser from 'body-parser'
+import whatsappHandler from './controllers/whatsappHandler';
 
 connectToDatabase();
 
@@ -15,9 +16,10 @@ app.use(
     })
   );
 
-app.post('/api/bot', function (req, res) {
+app.post('/api/bot', async function (req, res) {
 
 
+whatsappHandler(req.body)
   console.log(req.body.From);
   console.log(req.body.To)
   
