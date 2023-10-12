@@ -1,5 +1,5 @@
 const messages: Record<string, string>  = {
-    "welComeMessage":"Hello, \n We're thrilled to have you join our platform! 🎉You currently have 10 credits in your account. These credits can be used for various activities on the platform. Enjoy your time on our platform, and make the most of your credits!",
+    "welComeMessage":"Hello, \n We're thrilled to have you join our platform! 🎉You currently have 2 credits in your account. These credits can be used for various activities on the platform. Enjoy your time on our platform, and make the most of your credits!",
     "generateMessage":"Please Press Generate to proceed",
     "inappropriateInput":"Please follow the flow to Generate images",
     "requestPrompt":"Please provide the name of the image provided and a brief description or information about the background of image you've uploaded in the format Produtname,Background \n eg: Chair,In a room.",
