@@ -11,7 +11,7 @@ const userSchema = new Schema(
     credits:{
       type:Number,
       required:true,
-      default: 10
+      default: 2
     }
   }
 );

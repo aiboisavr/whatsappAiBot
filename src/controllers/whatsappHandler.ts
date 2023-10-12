@@ -12,7 +12,7 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
     let response:string;
     if(incoming.Body==='Generate')
     {
-      response='Hey that is great please upload an image to get started' 
+      response="Please upload an image less than 5mb to create a stunning product photography" 
       setStage()
       incrementStage();
       console.log(`generate ${getStage()}`)
@@ -21,12 +21,12 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
     {  
       if(getStage()===1)
       {
-            response='Please enter the prompt for image'
+            response=getReplyMessage("requestPrompt",0) 
             incrementStage();
             console.log(`Image ${getStage()}`)
       }
       else{
-            response='Please follow the flow to get result';
+            response=getReplyMessage("inappropriateInput",0) ;
       }
      
     }
@@ -37,33 +37,60 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
       console.log(getStage());
     }
 
-    else if(getStage()===2)
+    /*else if(getStage()===2)
     {
       response='Please eneter the details regarding background'
       incrementStage();
       console.log(`prompt ${getStage()}`)
-    }
+    }*/
 
-    else if(getStage()==3)
+    else if(getStage()==2)
     {
-       response="Hold on, We are generating your image"
-       incrementStage();
-      console.log(`complete ${getStage()}`)
+      const responseIntermediate="Hold on, We are generating your image"
+      const [product,prompt]=incoming.Body.split(',')
+      console.log(prompt)
+      console.log(product)
+      sendMessage(incoming.From,incoming.To,responseIntermediate)
+
+      incrementStage();
+
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      const mediaUrl=['https://raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png']
+      sendMessage(incoming.From,incoming.To,undefined,mediaUrl)
+
+
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      response=getReplyMessage("afterGeneration",0)
+
+      const user = await User.findOne({ phoneNumber: incoming.From });
+       if (user && user.credits !== undefined) {
+        user.credits -= 1;
+        user.save()
+      }
+       
     }
     
     else{
       const isExistingUser = await User.findOne({ phoneNumber: incoming.From })
-      response='Please type the command Generate to proceed'
+     
 
       if(!isExistingUser){
         const user = await User.create({
           phoneNumber: incoming.From
         })
-        console.log(`new user created with phone Number: ${user.phoneNumber} with ${user.credits} credits remaining.`)
-        response = await getReplyMessage('welComeMessage')
+
+        console.log(`New user created with phone Number: ${user.phoneNumber} with ${user.credits} credits remaining.`)
+         response =`${getReplyMessage('welComeMessage',0)}.\n Please type the command Generate to proceed`
+       
+
       }else{
         if(isExistingUser.credits==0){
-          response = await getReplyMessage('insufficientCredits')
+          response = `${getReplyMessage('insufficientCredits',0)}.`
+        }
+        else
+        {
+          response = `${getReplyMessage('creditBalance',isExistingUser.credits)}.\n Please type the command Generate to proceed`
+          
         }
       }
       setStage()
