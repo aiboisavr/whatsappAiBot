@@ -2,11 +2,13 @@ import { sendMessage } from "./twilio"
 import {incrementStage,decrementStage,getStage,setStage} from "../utils/state"
 import User from '../models/user.model' 
 import { getReplyMessage } from "../utils/mesaages";
+import { generatePaymentLink } from "./paymentHandler";
+import paymentLink from "razorpay/dist/types/paymentLink";
 
 
 export default async function whatsappHandler(incoming: { To: string; From: string; Body:string,MediaUrl0:string})
 {
-     
+    
     console.log("Hi")
 
     let response:string;
@@ -85,7 +87,18 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
 
       }else{
         if(isExistingUser.credits==0){
-          response = `${getReplyMessage('insufficientCredits',0)}.`
+          let paymentLink
+          const paymentLinkParams = {
+            phoneNumber: isExistingUser.phoneNumber.split(':')[1], 
+            amount: 100, 
+            referenceId: `${isExistingUser.phoneNumber}_${new Date().getTime()}`
+          }
+          try{
+            paymentLink = await generatePaymentLink(paymentLinkParams)
+          }catch(e){
+            console.log(`PaymentLink error${e}`)
+          }
+          response = `${getReplyMessage('insufficientCredits',0)}. \n ${paymentLink}`
         }
         else
         {
