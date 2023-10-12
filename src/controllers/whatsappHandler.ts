@@ -1,11 +1,13 @@
 import { sendMessage } from "./twilio"
 import {incrementStage,decrementStage,getStage,setStage} from "../utils/state"
+import User from '../models/user.model' 
+import { getReplyMessage } from "../utils/mesaages";
 
-export default function whatsappHandler(incoming: { To: string; From: string; Body:string,MediaUrl0:string})
+
+export default async function whatsappHandler(incoming: { To: string; From: string; Body:string,MediaUrl0:string})
 {
      
-      console.log("Hi")
-
+    console.log("Hi")
 
     let response:string;
     if(incoming.Body==='Generate')
@@ -50,7 +52,20 @@ export default function whatsappHandler(incoming: { To: string; From: string; Bo
     }
     
     else{
+      const isExistingUser = await User.findOne({ phoneNumber: incoming.From })
       response='Please type the command Generate to proceed'
+
+      if(!isExistingUser){
+        const user = await User.create({
+          phoneNumber: incoming.From
+        })
+        console.log(`new user created with phone Number: ${user.phoneNumber} with ${user.credits} credits remaining.`)
+        response = await getReplyMessage('welComeMessage')
+      }else{
+        if(isExistingUser.credits==0){
+          response = await getReplyMessage('insufficientCredits')
+        }
+      }
       setStage()
       console.log(getStage());
     }

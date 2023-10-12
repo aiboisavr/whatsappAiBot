@@ -14,5 +14,4 @@ export const connectToDatabase = async (): Promise<void> => {
   }
 };
 
-// Export the Mongoose instance (optional)
 export const db = mongoose.connection;
