@@ -10,7 +10,7 @@ console.log(finalImage.request.socket._httpMessage.res.responseUrl)
   const requestData = {
     prompt:`${prompt}`,
     webhook_url:`${process.env.Base_URL}/api/image?userId=${userId}`,
-    image: `${finalImage.request.socket._httpMessage.res.responseUrl}`,
+    image: "vv"//`${finalImage.request.socket._httpMessage.res.responseUrl}`,
   };
 
   try {
