@@ -5,7 +5,7 @@ export function incrementStage() {
 }
 
 export function decrementStage() {
-    stage += 1;
+    stage -= 1;
   }
   
 

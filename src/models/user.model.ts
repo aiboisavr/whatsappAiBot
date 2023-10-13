@@ -11,7 +11,10 @@ const userSchema = new Schema(
     credits:{
       type:Number,
       required:true,
-      default: 2
+      default: 10
+    },
+    last_modified:{
+      type:String,
     }
   }
 );
