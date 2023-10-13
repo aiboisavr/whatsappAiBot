@@ -9,8 +9,8 @@ console.log(finalImage.request.socket._httpMessage.res.responseUrl)
   const apiKey = process.env.API_KEY as string;
   const requestData = {
     prompt:`${prompt}`,
-    webhook_url:`${process.env.Base_URL}/api/image?userId=${userId}`,
-    image: "vv"//`${finalImage.request.socket._httpMessage.res.responseUrl}`,
+    webhook_url:`${process.env.Base_URL}/api/image/?userId=${userId}`,//'https://eol2i63njsm32p7.m.pipedream.net?userId=123',//
+    image:  "https://ik.imagekit.io/lkrvcrvnx/img_OcMnKBpwU.png?updatedAt=1696658007323?tr=orig-true"//`${finalImage.request.socket._httpMessage.res.responseUrl}`,
   };
 
   try {

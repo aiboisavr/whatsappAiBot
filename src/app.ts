@@ -26,7 +26,7 @@ app.post('/api/bot', async function (req, res) {
   
   });
 
-app.post('/api/image',async function(req,res){
+app.post('/api/image/',async function(req,res){
 
     ImageHandler(req.query.userId,req.body);
 })
