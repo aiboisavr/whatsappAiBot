@@ -9,7 +9,7 @@ console.log(finalImage.request.socket._httpMessage.res.responseUrl)
   const apiKey = process.env.API_KEY as string;
   const requestData = {
     prompt:`${prompt}`,
-    webhook_url:  'https://eol2i63njsm32p7.m.pipedream.net',                  // `${process.env.Base_URL}/api/image?userId=${userId}`,
+    webhook_url:`${process.env.Base_URL}/api/image?userId=${userId}`,
     image: `${finalImage.request.socket._httpMessage.res.responseUrl}`,
   };
 
