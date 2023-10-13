@@ -1,16 +1,16 @@
 import axios from 'axios';
 
 export default async function makeApiRequest(prompt:string,image:string,userId:string) {
-console.log(`${process.env.Base_URL}/api/image?userId=${userId}`)
+console.log(`${process.env.Base_URL}/api/image?userId=`+encodeURIComponent(userId))
 console.log(image)
-const finalImage= await axios.get(image)
-console.log(finalImage.request.socket._httpMessage.res.responseUrl)
+console.log(userId)
   const apiUrl = process.env.API_URL as string;
   const apiKey = process.env.API_KEY as string;
   const requestData = {
     prompt:`${prompt}`,
-    webhook_url:`${process.env.Base_URL}/api/image/?userId=${userId}`,//'https://eol2i63njsm32p7.m.pipedream.net?userId=123',//
-    image:  "https://ik.imagekit.io/lkrvcrvnx/img_OcMnKBpwU.png?updatedAt=1696658007323?tr=orig-true"//`${finalImage.request.socket._httpMessage.res.responseUrl}`,
+    webhook_url:`${process.env.Base_URL}/api/image/?userId=${userId}`,
+    image:`https://res.cloudinary.com/dmkarf8ed/image/fetch/w_496,h_496/f_png/${image}`
+   
   };
 
   try {
@@ -27,3 +27,8 @@ console.log(finalImage.request.socket._httpMessage.res.responseUrl)
 }
 
 
+ //"https://ik.imagekit.io/lkrvcrvnx/img_OcMnKBpwU.png?updatedAt=1696658007323?tr=orig-true"//`${finalImage.request.socket._httpMessage.res.responseUrl}`,
+ //'https://eol2i63njsm32p7.m.pipedream.net?userId=123',//
+
+ //const finalImage= await axios.get(image)
+//console.log(finalImage.request.socket._httpMessage.res.responseUrl)

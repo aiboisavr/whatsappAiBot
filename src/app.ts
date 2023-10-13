@@ -27,8 +27,9 @@ app.post('/api/bot', async function (req, res) {
   });
 
 app.post('/api/image/',async function(req,res){
-
-    ImageHandler(req.query.userId,req.body);
+   
+  const userId = String(req.query.userId); 
+    ImageHandler(userId,req.body);
 })
 
 app.post('/orderPaid', async (req,res)=>{

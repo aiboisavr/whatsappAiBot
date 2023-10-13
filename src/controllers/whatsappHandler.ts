@@ -7,9 +7,7 @@ import makeApiRequest from '../utils/requestImageGeneration'
 
 export default async function whatsappHandler(incoming: { To: string; From: string; Body:string,MediaUrl0:string})
 {
-     
-    console.log("Hi")
-
+ 
     let response:string;
     if(incoming.Body==='Generate')
     {
@@ -68,21 +66,21 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
        user.credits -= 1;
        user.save()
      }
-      const responseIntermediate="Hold on, We are generating your image"
+       response="Hold on, We are generating your image"
       const [product,prompt]=incoming.Body.split(',')
-      sendMessage(incoming.From,incoming.To,responseIntermediate)
+      //sendMessage(incoming.From,incoming.To,responseIntermediate)
       incrementStage();
       
       if(user && user.last_modified)
       makeApiRequest(incoming.Body,user.last_modified,incoming.From);
 
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      /*await new Promise(resolve => setTimeout(resolve, 2000))
       const mediaUrl=['https://raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png']
       sendMessage(incoming.From,incoming.To,undefined,mediaUrl)
 
 
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      response=getReplyMessage("afterGeneration",0)
+      await new Promise(resolve => setTimeout(resolve, 2000))*/
+      
        
     }
 
