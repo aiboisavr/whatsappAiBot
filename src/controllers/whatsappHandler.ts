@@ -12,17 +12,17 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
     if(incoming.Body==='Generate')
     {
       response="Please upload an image less than 5mb to create a stunning product photography" 
-      setStage()
-      incrementStage();
-      console.log(`generate ${getStage()}`)
+      await setStage(incoming.From)
+      await incrementStage(incoming.From);
+      console.log(`generate ${await getStage(incoming.From)}`)
     }
     else if(incoming.Body==='Reupload')
     {  
-      if(getStage()==2)
+      if(await getStage(incoming.From)==2)
       {
         response="Please reupload your desired image"
-        if(getStage()!=1)
-           decrementStage();
+        if(await getStage(incoming.From)!=1)
+           await decrementStage(incoming.From);
       }
       else{
         response=getReplyMessage("inappropriateInput",0) ;
@@ -34,11 +34,11 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
     }
     else if(incoming.MediaUrl0)
     {  
-      if(getStage()===1)
+      if(await getStage(incoming.From)===1)
       {
             response=getReplyMessage("requestPrompt",0) 
-            incrementStage();
-            console.log(`Image ${getStage()}`)
+            await incrementStage(incoming.From);
+            console.log(`Image ${await getStage(incoming.From)}`)
             //upload image url to db here
             const user = await User.findOne({ phoneNumber: incoming.From });
             if (user) {
@@ -55,11 +55,11 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
     else if(incoming.Body==='Exit')
     {
       response = await userChecker(incoming);
-      setStage()
-      console.log(getStage());
+      await setStage(incoming.From)
+      console.log(await getStage(incoming.From));
     }
 
-    else if(getStage()==2)
+    else if(await getStage(incoming.From)==2)
     {  
       const user = await User.findOne({ phoneNumber: incoming.From });
       if (user && user.credits !== undefined) {
@@ -69,7 +69,7 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
        response="Hold on, We are generating your image"
       const [product,prompt]=incoming.Body.split(',')
       //sendMessage(incoming.From,incoming.To,responseIntermediate)
-      incrementStage();
+      await incrementStage(incoming.From);
       
       if(user && user.last_modified)
       makeApiRequest(incoming.Body,user.last_modified,incoming.From);
@@ -84,20 +84,20 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
        
     }
 
-    else if(getStage()==3)
+    else if(await getStage(incoming.From)==3)
     {
-      console.log(getStage())
+      console.log(await getStage(incoming.From))
       if(incoming.Body==='SameImage')
       {
         response=getReplyMessage("requestPrompt",0) 
-        setStage()
-        incrementStage();
-        incrementStage();
+        await setStage(incoming.From)
+        await incrementStage(incoming.From);
+        await incrementStage(incoming.From);
 
       }
       else{
         response = await userChecker(incoming);
-        setStage()
+        await setStage(incoming.From)
       }
        
     }
