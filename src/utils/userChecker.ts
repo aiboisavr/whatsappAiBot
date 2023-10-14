@@ -42,8 +42,8 @@ export default async function userChecker(incoming: { To?: string; From: any; Bo
         
       }
     }
-    setStage()
-    console.log(getStage());
+    await setStage(incoming.From)
+    console.log(await getStage(incoming.From));
 
 
 }
