@@ -10,12 +10,9 @@ async function getImageDimensions(mediaUrl: string) {
       // Read the image dimensions using sharp
       let { width, height } = await sharp(response.data).metadata();
       if(width)
-       width=(Math.floor(width/8))*8
+       width=(Math.floor(width/8))*8;
       if(height)
-        height=(Math.floor(height/8))*8
-      // Delete the temporary file
-     // await unlink(response.config.url);
-      
+        height=(Math.floor(height/8))*8;
 
       return { width, height };
     } else {
