@@ -1,10 +1,5 @@
 import axios from 'axios';
 import  sharp  from 'sharp';
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
 
 export default async function makeApiRequest(prompt:string,image:string,userId:string) {
 console.log(`${process.env.Base_URL}/api/image?userId=`+encodeURIComponent(userId))
