@@ -7,6 +7,7 @@ var instance = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID as string, 
     key_secret: process.env.RAZORPAY_SECRET as string
 })
+//console.log(instance)
 
 export async function generatePaymentLink(paymentDetails:{ phoneNumber:string, amount: number, referenceId:string}){
     try{
@@ -21,6 +22,7 @@ export async function generatePaymentLink(paymentDetails:{ phoneNumber:string, a
               contact: paymentDetails.phoneNumber
             }
         })
+        console.log(paymentLink)
         return paymentLink?.short_url
     }catch(e){
         console.log(`Error while trying to create paymentLink::${JSON.stringify(e)}`)

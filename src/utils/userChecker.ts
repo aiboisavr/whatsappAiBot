@@ -5,9 +5,9 @@ import { getReplyMessage } from "../utils/mesaages";
 import { generatePaymentLink } from "../controllers/paymentHandler";
 
 const paymentPlans = {
-  "basic":10000,
-  "advanced":50000,
-  "pro":100000
+  "basic":1000,
+  "advanced":10000,
+  "pro":5000
 }
 
 

@@ -9,6 +9,7 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
 {
  
     let response:string;
+    let responseWaiting:string='';
     if(incoming.Body==='Generate')
     {
       response="Please upload an image less than 5mb to create a stunning product photography" 
@@ -66,13 +67,16 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
        user.credits -= 1;
        user.save()
      }
-       response="Hold on, We are generating your image"
+       response="Hold on, We are generating your image";
+       responseWaiting="We are almost there";
       const [product,prompt]=incoming.Body.split(',')
       //sendMessage(incoming.From,incoming.To,responseIntermediate)
       await incrementStage(incoming.From);
       
       if(user && user.last_modified)
       makeApiRequest(incoming.Body,user.last_modified,incoming.From);
+
+
 
       /*await new Promise(resolve => setTimeout(resolve, 2000))
       const mediaUrl=['https://raw.githubusercontent.com/dianephan/flask_upload_photos/main/UPLOADS/DRAW_THE_OWL_MEME.png']
@@ -109,6 +113,12 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
 
 
      sendMessage(incoming.From,incoming.To,response)
+
+     if(responseWaiting)
+     {
+      await new Promise(resolve => setTimeout(resolve, 10000))
+      sendMessage(incoming.From,incoming.To,responseWaiting)
+     }
 }
 
 
