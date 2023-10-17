@@ -4,6 +4,12 @@ import User from '../models/user.model'
 import { getReplyMessage } from "../utils/mesaages";
 import { generatePaymentLink } from "../controllers/paymentHandler";
 
+const paymentPlans = {
+  "basic":10000,
+  "advanced":50000,
+  "pro":100000
+}
+
 
 export default async function userChecker(incoming: { To?: string; From: any; Body?: string; MediaUrl0?: string; })
 {
@@ -22,19 +28,23 @@ export default async function userChecker(incoming: { To?: string; From: any; Bo
      
     
     }else{
-      if(isExistingUser.credits==0){
+      if(incoming.Body==="basic" || incoming.Body ==="advanced" || incoming.Body === "pro"){
         let paymentLink
         const paymentLinkParams = {
           phoneNumber: isExistingUser.phoneNumber.split(':')[1], 
-          amount: 100, 
+          amount: paymentPlans[incoming.Body], 
           referenceId: `${isExistingUser.phoneNumber}_${new Date().getTime()}`
         }
+
         try{
           paymentLink = await generatePaymentLink(paymentLinkParams)
+          return `Please use this link to complete payment and enjoy the benefits of the ${incoming.Body} plan. \n ${paymentLink}`
         }catch(e){
           console.log(`PaymentLink error${e}`)
         }
-        return `${getReplyMessage('insufficientCredits',0)}. \n ${paymentLink}`
+      }
+      if(isExistingUser.credits==0){
+        return `${getReplyMessage('insufficientCredits',0)}. Please choose any of the following plans to proceed \n Basic: 10Rs - 10 images \n Pro: 50Rs - 75 images \n Pro Max Ultimate 100Rs - 150 images`
       }
       else
       {
