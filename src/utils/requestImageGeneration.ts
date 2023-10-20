@@ -7,7 +7,7 @@ const openai = new OpenAI({
 })
 
 export default async function makeApiRequest(prompt:string,image:string,userId:string) {
-  console.log(`${process.env.Base_URL}/api/image?userId=`+encodeURIComponent(userId))
+  console.log(`${process.env.Base_URL}/api/image?userId=${userId}`)
   console.log(image)
   console.log(userId)
   const elaboratePrompt = await getElaboratePrompt(prompt)

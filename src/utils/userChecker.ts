@@ -3,15 +3,16 @@ import {incrementStage,decrementStage,getStage,setStage} from "../utils/state"
 import User from '../models/user.model' 
 import { getReplyMessage } from "../utils/mesaages";
 import { generatePaymentLink } from "../controllers/paymentHandler";
+import { sendMessage } from "../controllers/twilio";
 
 const paymentPlans = {
-  "basic":1000,
-  "advanced":10000,
-  "pro":5000
+  "Starter":5000,
+  "Basic":30000,
+  "Pro":50000
 }
 
 
-export default async function userChecker(incoming: { To?: string; From: any; Body?: string; MediaUrl0?: string; })
+export default async function userChecker(incoming: { To: string; From: any; Body?: string; MediaUrl0?: string; })
 {
 
 
@@ -24,11 +25,30 @@ export default async function userChecker(incoming: { To?: string; From: any; Bo
       })
     
       console.log(`New user created with phone Number: ${user.phoneNumber} with ${user.credits} credits remaining.`)
-       return `${getReplyMessage('welComeMessage',0)}.\n Please type the command Generate to proceed`
      
     
+       await sendMessage(incoming.From,incoming.To,getReplyMessage('Dehidden'))
+       await new Promise(resolve => setTimeout(resolve, 1000))
+       await sendMessage(incoming.From,incoming.To,getReplyMessage('welcomeMessageNew'))
+       await new Promise(resolve => setTimeout(resolve, 1000))
+       await sendMessage(incoming.From,incoming.To,getReplyMessage('createHelp'))
+       
+      // return `${getReplyMessage('welComeMessage',0)}.\n Please type the command Generate to proceed`
+
+   return "";
+    
     }else{
-      if(incoming.Body==="basic" || incoming.Body ==="advanced" || incoming.Body === "pro"){
+      
+      if(isExistingUser.newUser)
+      {
+        await sendMessage(incoming.From,incoming.To,getReplyMessage('Dehidden'))
+         await new Promise(resolve => setTimeout(resolve, 1000))
+         await sendMessage(incoming.From,incoming.To,getReplyMessage('welcomeMessageNew'))
+         await new Promise(resolve => setTimeout(resolve, 1000))
+        await sendMessage(incoming.From,incoming.To,getReplyMessage('createHelp'))
+      }
+
+      else if(incoming.Body==="Starter" || incoming.Body ==="Basic" || incoming.Body === "Pro"){
         let paymentLink
         const paymentLinkParams = {
           phoneNumber: isExistingUser.phoneNumber.split(':')[1], 
@@ -43,12 +63,12 @@ export default async function userChecker(incoming: { To?: string; From: any; Bo
           console.log(`PaymentLink error${e}`)
         }
       }
-      if(isExistingUser.credits==0){
-        return `${getReplyMessage('insufficientCredits',0)}. Please choose any of the following plans to proceed \n Basic: 10Rs - 10 images \n Pro: 50Rs - 75 images \n Pro Max Ultimate 100Rs - 150 images`
+      else if(isExistingUser.credits==0){
+        return `${getReplyMessage('insufficientCredits')}`
       }
       else
       {
-        return `${getReplyMessage('creditBalance',isExistingUser.credits)}.\n Please type the command Generate to proceed`
+        return `${getReplyMessage('creditBalance',isExistingUser.credits)}`
         
       }
     }

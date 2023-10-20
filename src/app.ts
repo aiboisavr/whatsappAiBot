@@ -23,13 +23,14 @@ app.use(
 app.post('/api/bot', async function (req, res) {
 
   whatsappHandler(req.body)
-  
+ 
   });
 
 app.post('/api/image/',async function(req,res){
    
   const userId = String(req.query.userId); 
     ImageHandler(userId,req.body);
+
 })
 
 app.post('/orderPaid', async (req,res)=>{
