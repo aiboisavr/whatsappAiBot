@@ -1,6 +1,8 @@
 import Razorpay from 'razorpay'
 import User from '../models/user.model'
 import { sendMessage } from "./twilio"
+import { paymentPlans } from '../utils/userChecker'
+import { getReplyMessage } from '../utils/mesaages'
 
 
 var instance = new Razorpay({ 
@@ -30,10 +32,19 @@ export async function generatePaymentLink(paymentDetails:{ phoneNumber:string, a
 }
 
 export async function handleOrderPaid(orderResponse:{receipt:string}){
-    const userPhoneNumber = orderResponse.receipt.split('_')[0];
+    const userPhoneNumber = `whatsapp:${orderResponse.receipt.split('_')[0]}`;
+    const userPlan = orderResponse.receipt.split('_')[2]
+    const creditsPurchased = paymentPlans[userPlan].credits
     const user = await User.findOneAndUpdate(
         {phoneNumber: userPhoneNumber},
-        {credits:5}
+        { $inc: { credits: creditsPurchased } },
+        { new: true }
     )
-    sendMessage(userPhoneNumber,process.env.TWILIO_PHONE_NUMBER as string,'Order Successful.')
+    sendMessage(userPhoneNumber,process.env.TWILIO_PHONE_NUMBER as string,`Congrats, your payment is successful! The ${userPlan} pack is now activated! ✅\nYou have now ${user?.credits} Photo Credits remaining\n\nStart creating new photos of your product now! 📸`)
+}
+
+export async function handlePaymentFailed(paymentFailedResponse:{ reference_id:string }){
+    const referenceId = paymentFailedResponse.reference_id
+    const userPhoneNumber = `whatsapp:${referenceId.split('_')[0]}`;
+    sendMessage(userPhoneNumber,process.env.TWILIO_PHONE_NUMBER as string,getReplyMessage('paymentError'))
 }

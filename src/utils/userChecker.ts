@@ -5,12 +5,25 @@ import { getReplyMessage } from "../utils/mesaages";
 import { generatePaymentLink } from "../controllers/paymentHandler";
 import { sendMessage } from "../controllers/twilio";
 
-const paymentPlans = {
-  "Starter":5000,
-  "Basic":30000,
-  "Pro":50000
+interface Plan {
+  amount: number;
+  credits: number;
 }
 
+export const paymentPlans:{ [key: string]: Plan } = {
+  "Starter":{
+    amount:10,
+    credits:10
+  },
+  "Basic":{
+    amount:50,
+    credits:75
+  },
+  "Pro":{
+    amount:100,
+    credits:150
+  }
+}
 
 export default async function userChecker(incoming: { To: string; From: any; Body?: string; MediaUrl0?: string; })
 {
@@ -50,15 +63,16 @@ export default async function userChecker(incoming: { To: string; From: any; Bod
 
       else if(incoming.Body==="Starter" || incoming.Body ==="Basic" || incoming.Body === "Pro"){
         let paymentLink
+        const phoneNumber = isExistingUser.phoneNumber.split(':')[1]
         const paymentLinkParams = {
-          phoneNumber: isExistingUser.phoneNumber.split(':')[1], 
-          amount: paymentPlans[incoming.Body], 
-          referenceId: `${isExistingUser.phoneNumber}_${new Date().getTime()}`
+          phoneNumber: phoneNumber, 
+          amount: paymentPlans[incoming.Body].amount*100, 
+          referenceId: `${phoneNumber}_${new Date().getTime()}_${incoming.Body}`
         }
 
         try{
           paymentLink = await generatePaymentLink(paymentLinkParams)
-          return `Please use this link to complete payment and enjoy the benefits of the ${incoming.Body} plan. \n ${paymentLink}`
+          return `Great choice! The ${incoming.Body} pack looks perfect for you.\n\nPlease use the link below to complete payment within the next 10 minutes.\n${paymentLink}`
         }catch(e){
           console.log(`PaymentLink error${e}`)
         }

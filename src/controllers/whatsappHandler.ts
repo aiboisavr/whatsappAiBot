@@ -46,7 +46,8 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
            await decrementStage(incoming.From);
       }
       else{
-        response=getReplyMessage("inappropriateInput") ;
+        await sendMessage(incoming.From,incoming.To,getReplyMessage("inappropriateInput")) ;
+        await setStage(incoming.From)
       }  
      
     }
@@ -83,6 +84,7 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
       else{
             
             await sendMessage(incoming.From,incoming.To,getReplyMessage('inappropriateInput'))
+            await setStage(incoming.From)
       }
      
     }
@@ -108,22 +110,26 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
     {  
       
       const [product,prompt]=incoming.Body.split(',')
-      await incrementStage(incoming.From);
+      console.log(product)
+      console.log(prompt)
+      if(product && prompt && product!='' && prompt!=''){
+        await incrementStage(incoming.From);
       
-      if(user && user.last_modified)
-      makeApiRequest(incoming.Body,user.last_modified,incoming.From);
+        if(user && user.last_modified)
+        makeApiRequest(incoming.Body,user.last_modified,incoming.From);
 
 
-      await sendMessage(incoming.From,incoming.To,getReplyMessage('confirmation'))
-      await new Promise(resolve => setTimeout(resolve, 10000))
-      await sendMessage(incoming.From,incoming.To,getReplyMessage('waiting'))
+        await sendMessage(incoming.From,incoming.To,getReplyMessage('confirmation'))
+        await new Promise(resolve => setTimeout(resolve, 10000))
+        await sendMessage(incoming.From,incoming.To,getReplyMessage('waiting'))
 
-      if (user && user.credits !== undefined) {
-        user.credits -= 1;
-        user.save()
+        if (user && user.credits !== undefined) {
+          user.credits -= 1;
+          user.save()
+        }
+      }else{
+        await sendMessage(incoming.From,incoming.To,getReplyMessage('promptError'))
       }
-
-       
     }
 
     else if(await getStage(incoming.From)==3)
@@ -149,20 +155,20 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
        
     }
 
-    else if(incoming.Body==='Get Credits')
+    else if(incoming.Body==='Get Credits' || incoming.Body==='Change Pack')
     {
       sendMessage(incoming.From,incoming.To,getReplyMessage('getCredits',user?.credits))
     }
+
+    else if(incoming.Body==='FAQ'){
+      sendMessage(incoming.From,incoming.To,getReplyMessage('FAQ'))
+    }
     
     else{
-       
-      response = await userChecker(incoming);
+        response = await userChecker(incoming);
       if(response)
-      sendMessage(incoming.From,incoming.To,response)
-
+        sendMessage(incoming.From,incoming.To,response)
     }
-
-
 }
 
 

@@ -4,7 +4,7 @@ import bodyParser from 'body-parser'
 import whatsappHandler from './controllers/whatsappHandler';
 import session from 'express-session'
 import ImageHandler from './controllers/imageHandler';
-import { handleOrderPaid } from './controllers/paymentHandler';
+import { handleOrderPaid,handlePaymentFailed } from './controllers/paymentHandler';
 connectToDatabase();
 
 
@@ -36,6 +36,12 @@ app.post('/api/image/',async function(req,res){
 app.post('/orderPaid', async (req,res)=>{
   const orderPaidResponse = req.body.payload.order.entity;
   handleOrderPaid(orderPaidResponse)
+  res.json({status:'ok'})
+})
+
+app.post('/paymentFailed', async (req,res)=>{
+  const paymentFailedResponse = req.body;
+  handlePaymentFailed(paymentFailedResponse)
   res.json({status:'ok'})
 })
 
