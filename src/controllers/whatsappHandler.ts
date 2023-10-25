@@ -13,6 +13,7 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
 
     if(incoming.Body==='Create')
     {
+      await setStage(incoming.From)
       if(user?.newUser)
       {
         await sendMessage(incoming.From,incoming.To,getReplyMessage('howToCreate'))
@@ -22,12 +23,12 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
       }
 
       else{
-      
+        if(user?.credits&& user.credits>0){
           await sendMessage(incoming.From,incoming.To,getReplyMessage('imageUpload'))
-         
-         // add default flow
+        }else{
+          return await sendMessage(incoming.From,incoming.To,getReplyMessage('insufficientCredits'))
+        }
       }
-      await setStage(incoming.From)
       await incrementStage(incoming.From);
 
       console.log(`generate ${await getStage(incoming.From)}`)
@@ -139,10 +140,15 @@ export default async function whatsappHandler(incoming: { To: string; From: stri
 
       if(incoming.Body==='Generate Again')
       {
-        await sendMessage(incoming.From,incoming.To,getReplyMessage('requestPrompt'))
-        await setStage(incoming.From)
-        await incrementStage(incoming.From);
-        await incrementStage(incoming.From);
+        if(user?.credits && user.credits>0){
+          await sendMessage(incoming.From,incoming.To,getReplyMessage('requestPrompt'))
+          await setStage(incoming.From)
+          await incrementStage(incoming.From);
+          await incrementStage(incoming.From);
+        }else{
+          await setStage(incoming.From)
+          await sendMessage(incoming.From,incoming.To,getReplyMessage('insufficientCredits'))
+        }
 
       }
       else{
