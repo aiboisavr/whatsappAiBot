@@ -41,7 +41,7 @@ async function getImageDimensions(mediaUrl: string) {
     if (response.config.url) {
       // Read the image dimensions using sharp
       let { width, height } = await sharp(response.data).metadata();
-      if(width&&height&&(height>=1024||width>=1024)){
+      while(width&&height&&(height>=1024||width>=1024)){
         height = height/2
         width = width/2
       }

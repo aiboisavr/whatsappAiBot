@@ -55,7 +55,7 @@ function getImageDimensions(mediaUrl) {
             if (response.config.url) {
                 // Read the image dimensions using sharp
                 let { width, height } = yield (0, sharp_1.default)(response.data).metadata();
-                if (width && height && (height >= 1024 || width >= 1024)) {
+                while (width && height && (height >= 1024 || width >= 1024)) {
                     height = height / 2;
                     width = width / 2;
                 }
