@@ -72,6 +72,9 @@ function userChecker(incoming) {
                     console.log(`PaymentLink error${e}`);
                 }
             }
+            else if (incoming.Body === 'Back to Home') {
+                return `${(0, mesaages_1.getReplyMessage)('creditBalance', isExistingUser.credits)}`;
+            }
             else if (isExistingUser.credits == 0) {
                 return `${(0, mesaages_1.getReplyMessage)('insufficientCredits')}`;
             }

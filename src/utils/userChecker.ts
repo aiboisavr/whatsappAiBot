@@ -51,7 +51,6 @@ export default async function userChecker(incoming: { To: string; From: any; Bod
    return "";
     
     }else{
-      
       if(isExistingUser.newUser)
       {
         await sendMessage(incoming.From,incoming.To,getReplyMessage('Dehidden'))
@@ -76,6 +75,9 @@ export default async function userChecker(incoming: { To: string; From: any; Bod
         }catch(e){
           console.log(`PaymentLink error${e}`)
         }
+      }
+      else if(incoming.Body==='Back to Home'){
+        return `${getReplyMessage('creditBalance',isExistingUser.credits)}`
       }
       else if(isExistingUser.credits==0){
         return `${getReplyMessage('insufficientCredits')}`
