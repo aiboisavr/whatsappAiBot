@@ -3,15 +3,29 @@ import {incrementStage,decrementStage,getStage,setStage} from "../utils/state"
 import User from '../models/user.model' 
 import { getReplyMessage } from "../utils/mesaages";
 import { generatePaymentLink } from "../controllers/paymentHandler";
+import { sendMessage } from "../controllers/twilio";
 
-const paymentPlans = {
-  "basic":1000,
-  "advanced":10000,
-  "pro":5000
+interface Plan {
+  amount: number;
+  credits: number;
 }
 
+export const paymentPlans:{ [key: string]: Plan } = {
+  "Starter":{
+    amount:10,
+    credits:10
+  },
+  "Basic":{
+    amount:50,
+    credits:75
+  },
+  "Pro":{
+    amount:100,
+    credits:150
+  }
+}
 
-export default async function userChecker(incoming: { To?: string; From: any; Body?: string; MediaUrl0?: string; })
+export default async function userChecker(incoming: { To: string; From: any; Body?: string; MediaUrl0?: string; })
 {
 
 
@@ -24,31 +38,53 @@ export default async function userChecker(incoming: { To?: string; From: any; Bo
       })
     
       console.log(`New user created with phone Number: ${user.phoneNumber} with ${user.credits} credits remaining.`)
-       return `${getReplyMessage('welComeMessage',0)}.\n Please type the command Generate to proceed`
      
     
+       await sendMessage(incoming.From,incoming.To,getReplyMessage('Dehidden'))
+       await new Promise(resolve => setTimeout(resolve, 1000))
+       await sendMessage(incoming.From,incoming.To,getReplyMessage('welcomeMessageNew'))
+       await new Promise(resolve => setTimeout(resolve, 1000))
+       await sendMessage(incoming.From,incoming.To,getReplyMessage('createHelp'))
+       
+      // return `${getReplyMessage('welComeMessage',0)}.\n Please type the command Generate to proceed`
+
+   return "";
+    
     }else{
-      if(incoming.Body==="basic" || incoming.Body ==="advanced" || incoming.Body === "pro"){
+      if(isExistingUser.newUser)
+      {
+        await sendMessage(incoming.From,incoming.To,getReplyMessage('Dehidden'))
+         await new Promise(resolve => setTimeout(resolve, 1000))
+         await sendMessage(incoming.From,incoming.To,getReplyMessage('welcomeMessageNew'))
+         await new Promise(resolve => setTimeout(resolve, 1000))
+        await sendMessage(incoming.From,incoming.To,getReplyMessage('createHelp'))
+      }
+
+      else if(incoming.Body==="Starter" || incoming.Body ==="Basic" || incoming.Body === "Pro"){
         let paymentLink
+        const phoneNumber = isExistingUser.phoneNumber.split(':')[1]
         const paymentLinkParams = {
-          phoneNumber: isExistingUser.phoneNumber.split(':')[1], 
-          amount: paymentPlans[incoming.Body], 
-          referenceId: `${isExistingUser.phoneNumber}_${new Date().getTime()}`
+          phoneNumber: phoneNumber, 
+          amount: paymentPlans[incoming.Body].amount*100, 
+          referenceId: `${phoneNumber}_${new Date().getTime()}_${incoming.Body}`
         }
 
         try{
           paymentLink = await generatePaymentLink(paymentLinkParams)
-          return `Please use this link to complete payment and enjoy the benefits of the ${incoming.Body} plan. \n ${paymentLink}`
+          return `Great choice! The ${incoming.Body} pack looks perfect for you.\n\nPlease use the link below to complete payment within the next 10 minutes.\n${paymentLink}`
         }catch(e){
           console.log(`PaymentLink error${e}`)
         }
       }
-      if(isExistingUser.credits==0){
-        return `${getReplyMessage('insufficientCredits',0)}. Please choose any of the following plans to proceed \n Basic: 10Rs - 10 images \n Pro: 50Rs - 75 images \n Pro Max Ultimate 100Rs - 150 images`
+      else if(incoming.Body==='Back to Home'){
+        return `${getReplyMessage('creditBalance',isExistingUser.credits)}`
+      }
+      else if(isExistingUser.credits==0){
+        return `${getReplyMessage('insufficientCredits')}`
       }
       else
       {
-        return `${getReplyMessage('creditBalance',isExistingUser.credits)}.\n Please type the command Generate to proceed`
+        return `${getReplyMessage('creditBalance',isExistingUser.credits)}`
         
       }
     }

@@ -7,7 +7,7 @@ const openai = new OpenAI({
 })
 
 export default async function makeApiRequest(prompt:string,image:string,userId:string) {
-  console.log(`${process.env.Base_URL}/api/image?userId=`+encodeURIComponent(userId))
+  console.log(`${process.env.Base_URL}/api/image?userId=${userId}`)
   console.log(image)
   console.log(userId)
   const elaboratePrompt = await getElaboratePrompt(prompt)
@@ -41,14 +41,18 @@ async function getImageDimensions(mediaUrl: string) {
     if (response.config.url) {
       // Read the image dimensions using sharp
       let { width, height } = await sharp(response.data).metadata();
+      while(width&&height&&(height>=1024||width>=1024)){
+        height = height/2
+        width = width/2
+      }
       if(width)
        width=(Math.floor(width/8))*8
-      if(height)
+      if(height){
         height=(Math.floor(height/8))*8
+      }
+      console.log(`Height:${height}, width:${width}`)
       // Delete the temporary file
      // await unlink(response.config.url);
-      
-
       return { width, height };
     } else {
       console.error('URL is undefined. Cannot delete the temporary file.');

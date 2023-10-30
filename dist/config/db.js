@@ -28,5 +28,4 @@ const connectToDatabase = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.connectToDatabase = connectToDatabase;
-// Export the Mongoose instance (optional)
 exports.db = mongoose_1.default.connection;

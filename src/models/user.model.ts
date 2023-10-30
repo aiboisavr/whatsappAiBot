@@ -15,6 +15,10 @@ const userSchema = new Schema(
     },
     last_modified:{
       type:String,
+    },
+    newUser:{
+      type:Boolean,
+      default:true
     }
   }
 );

@@ -17,6 +17,7 @@ export const sendMessage = (to: string, from: string, body?: string,mediaUrl?:st
         resolve(message.sid);
       })
       .catch(error => {
+        console.log(error)
         reject(error);
       });
   });

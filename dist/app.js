@@ -16,6 +16,8 @@ const db_1 = require("./config/db");
 const express_1 = __importDefault(require("express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const whatsappHandler_1 = __importDefault(require("./controllers/whatsappHandler"));
+const imageHandler_1 = __importDefault(require("./controllers/imageHandler"));
+const paymentHandler_1 = require("./controllers/paymentHandler");
 (0, db_1.connectToDatabase)();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 3000;
@@ -26,10 +28,24 @@ app.use(express_1.default.urlencoded({
 app.post('/api/bot', function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         (0, whatsappHandler_1.default)(req.body);
-        console.log(req.body.From);
-        console.log(req.body.To);
     });
 });
+app.post('/api/image/', function (req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const userId = String(req.query.userId);
+        (0, imageHandler_1.default)(userId, req.body);
+    });
+});
+app.post('/orderPaid', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const orderPaidResponse = req.body.payload.order.entity;
+    (0, paymentHandler_1.handleOrderPaid)(orderPaidResponse);
+    res.json({ status: 'ok' });
+}));
+app.post('/paymentFailed', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const paymentFailedResponse = req.body;
+    (0, paymentHandler_1.handlePaymentFailed)(paymentFailedResponse);
+    res.json({ status: 'ok' });
+}));
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
