@@ -23,14 +23,14 @@ function makeApiRequest(prompt, image, userId) {
         console.log(`${process.env.Base_URL}/api/image?userId=${userId}`);
         console.log(image);
         console.log(userId);
-        const elaboratePrompt = yield getElaboratePrompt(prompt);
+        // const elaboratePrompt = await getElaboratePrompt(prompt)
         const apiUrl = process.env.API_URL;
         const apiKey = process.env.API_KEY;
-        const dimensions = yield getImageDimensions(image);
+        // const dimensions = await getImageDimensions(image)
         const requestData = {
-            prompt: `${elaboratePrompt ? elaboratePrompt : prompt}`,
+            prompt: prompt,
             webhook_url: `${process.env.Base_URL}/api/image/?userId=${userId}`,
-            image: `https://res.cloudinary.com/dmkarf8ed/image/fetch/w_${dimensions === null || dimensions === void 0 ? void 0 : dimensions.width},h_${dimensions === null || dimensions === void 0 ? void 0 : dimensions.height}/f_png/${image}`
+            image: image
         };
         try {
             const response = yield axios_1.default.post(apiUrl, requestData, {

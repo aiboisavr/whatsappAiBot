@@ -10,16 +10,16 @@ export default async function makeApiRequest(prompt:string,image:string,userId:s
   console.log(`${process.env.Base_URL}/api/image?userId=${userId}`)
   console.log(image)
   console.log(userId)
-  const elaboratePrompt = await getElaboratePrompt(prompt)
+  // const elaboratePrompt = await getElaboratePrompt(prompt)
   const apiUrl = process.env.API_URL as string;
   const apiKey = process.env.API_KEY as string;
-  const dimensions = await getImageDimensions(image)
+  // const dimensions = await getImageDimensions(image)
   const requestData = {
-    prompt:`${elaboratePrompt?elaboratePrompt:prompt}`,
+    prompt:prompt,
     webhook_url:`${process.env.Base_URL}/api/image/?userId=${userId}`,
-    image:`https://res.cloudinary.com/dmkarf8ed/image/fetch/w_${dimensions?.width},h_${dimensions?.height}/f_png/${image}`
+    image:image
   };
-
+  
   try {
     const response = await axios.post(apiUrl, requestData, {
       headers: {
