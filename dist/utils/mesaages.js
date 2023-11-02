@@ -29,6 +29,8 @@ function getReplyMessage(messageOption, credits) {
                 return `👋 Hey there, welcome to Dehidden AI — create amazing professional photographs for your product instantly!\n\nYou currently have ${credits} photo credits remaining\n\nSimply click on 'Create' to get started! 🚀`;
             case 'getCredits':
                 return `You have currently ${credits} photo credits remaining.\n\nPurchase more credits by choosing any one of our below packs:\nStarter — ${userChecker_1.paymentPlans[`Starter`].credits} Photos for ${userChecker_1.paymentPlans[`Starter`].amount} INR\nBasic — ${userChecker_1.paymentPlans[`Basic`].credits} Photos for ${userChecker_1.paymentPlans[`Basic`].amount} INR \nPro — ${userChecker_1.paymentPlans[`Pro`].credits} Photos for ${userChecker_1.paymentPlans[`Pro`].amount} INR`;
+            case 'postGen1':
+                return `You have credits left to create ${credits} more photos for free. And then load up more from the 'Get Credits' option below.\nSo let's start creating! 📸`;
         }
     }
     return messages[messageOption];

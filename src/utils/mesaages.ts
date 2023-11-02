@@ -54,7 +54,8 @@ export function getReplyMessage(messageOption: string, credits?:Number): string{
             
             case 'getCredits':
                 return `You have currently ${credits} photo credits remaining.\n\nPurchase more credits by choosing any one of our below packs:\nStarter — ${paymentPlans[`Starter`].credits} Photos for ${paymentPlans[`Starter`].amount} INR\nBasic — ${paymentPlans[`Basic`].credits} Photos for ${paymentPlans[`Basic`].amount} INR \nPro — ${paymentPlans[`Pro`].credits} Photos for ${paymentPlans[`Pro`].amount} INR` 
-            
+            case 'postGen1':
+                return `You have credits left to create ${credits} more photos for free. And then load up more from the 'Get Credits' option below.\nSo let's start creating! 📸`
 
         }
     }

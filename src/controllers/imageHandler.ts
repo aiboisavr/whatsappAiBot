@@ -26,7 +26,7 @@ export default async function ImageHandler(userId:string,Body:Result) {
          await sendMessage(formattedUserId,process.env.TWILIO_PHONE_NUMBER as string,undefined,mediaUrl)
          await new Promise(resolve => setTimeout(resolve, 10000))
          await sendMessage(formattedUserId,process.env.TWILIO_PHONE_NUMBER as string,getReplyMessage('postGen'),undefined)
-         await sendMessage(formattedUserId,process.env.TWILIO_PHONE_NUMBER as string,getReplyMessage('postGen1'),undefined)
+         await sendMessage(formattedUserId,process.env.TWILIO_PHONE_NUMBER as string,getReplyMessage('postGen1', user?.credits),undefined)
           user.newUser=false;
           user.save()
         }
