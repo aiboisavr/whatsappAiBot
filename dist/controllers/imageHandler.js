@@ -27,7 +27,7 @@ function ImageHandler(userId, Body) {
                 yield (0, twilio_1.sendMessage)(formattedUserId, process.env.TWILIO_PHONE_NUMBER, undefined, mediaUrl);
                 yield new Promise(resolve => setTimeout(resolve, 10000));
                 yield (0, twilio_1.sendMessage)(formattedUserId, process.env.TWILIO_PHONE_NUMBER, (0, mesaages_1.getReplyMessage)('postGen'), undefined);
-                yield (0, twilio_1.sendMessage)(formattedUserId, process.env.TWILIO_PHONE_NUMBER, (0, mesaages_1.getReplyMessage)('postGen1'), undefined);
+                yield (0, twilio_1.sendMessage)(formattedUserId, process.env.TWILIO_PHONE_NUMBER, (0, mesaages_1.getReplyMessage)('postGen1', user === null || user === void 0 ? void 0 : user.credits), undefined);
                 user.newUser = false;
                 user.save();
             }
